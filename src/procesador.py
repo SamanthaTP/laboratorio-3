@@ -22,6 +22,10 @@ class Analizador:
         ventas_por_provincia = {}
         for fila in self.datos:
             provincia = fila["PROVINCIA"]
+
+            if provincia == "ND" :
+                continue
+            
             ventas = fila["TOTAL_VENTAS"]
             if provincia in ventas_por_provincia:
                 ventas_por_provincia[provincia] += ventas
