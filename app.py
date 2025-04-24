@@ -14,5 +14,11 @@ def main():
     ventas = analizador.ventas_por_provincia(provincia)
     print(f"\tVentas de {provincia}: ${ventas:,.2f}")
 
+    try:
+        ventas = analizador.ventas_por_provincia(provincia)
+        print(f"\tVentas de {provincia}: ${ventas:,.2f}")
+    except ValueError as e:
+        print(e)
+
 if __name__ == "__main__":
     main()

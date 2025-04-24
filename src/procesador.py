@@ -25,7 +25,7 @@ class Analizador:
 
             if provincia == "ND" :
                 continue
-            
+
             ventas = fila["TOTAL_VENTAS"]
             if provincia in ventas_por_provincia:
                 ventas_por_provincia[provincia] += ventas
@@ -35,7 +35,15 @@ class Analizador:
 
     def ventas_por_provincia(self, nombre):
         total = 0
+        encontrada = False
         for fila in self.datos:
-            if fila["PROVINCIA"].lower() == nombre.lower():
+            if fila["PROVINCIA"].lower() == nombre.strip().lower():
                 total += fila["TOTAL_VENTAS"]
+                encontrada = True
+        if not encontrada:
+            raise ValueError(f"La provincia '{nombre}' no se encuentra en los datos.")
         return total
+    def ventas_por_provincia(self, nombre):
+        """Retorna el total de ventas de una provincia determinada"""
+        ventas_por_provincia = self.ventas_totales_por_provincia()
+        nombre_normalizado = nombre.strip().upper()  # Convertir nombre a mayusculas
