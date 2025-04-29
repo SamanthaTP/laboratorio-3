@@ -43,7 +43,52 @@ class Analizador:
         if not encontrada:
             raise ValueError(f"La provincia '{nombre}' no se encuentra en los datos.")
         return total
-    def ventas_por_provincia(self, nombre):
-        """Retorna el total de ventas de una provincia determinada"""
-        ventas_por_provincia = self.ventas_totales_por_provincia()
-        nombre_normalizado = nombre.strip().upper()  # Convertir nombre a mayusculas
+    
+    def exportaciones_totales_por_mes(self):
+        exportaciones_por_mes = {}
+        for fila in self.datos:
+            mes = fila["MES"]
+            exportaciones = fila["EXPORTACIONES"]
+            if mes in exportaciones_por_mes:
+                exportaciones_por_mes[mes] += exportaciones
+            else:
+                exportaciones_por_mes[mes] = exportaciones
+        return exportaciones_por_mes
+    
+    def porcentaje_ventas_tarifa_0(self):
+        porcentaje_por_provincia = {}
+        for fila in self.datos:
+            provincia = fila["PROVINCIA"]
+            ventas_netas_tarifa_0 = fila["VENTAS_NETAS_TARIFA_0"]
+            total_ventas = fila["TOTAL_VENTAS"]
+        
+        if total_ventas == 0:  # Para evitar la división por 0
+            porcentaje = 0
+        else:
+            porcentaje = (ventas_netas_tarifa_0 / total_ventas) * 100
+        
+        if provincia in porcentaje_por_provincia:
+            porcentaje_por_provincia[provincia].append(porcentaje)
+        else:
+            porcentaje_por_provincia[provincia] = [porcentaje]
+    
+        # Promedio por provincia
+        promedio_por_provincia = {prov: sum(valores) / len(valores) for prov, valores in porcentaje_por_provincia.items()}
+        return promedio_por_provincia
+    
+    def provincia_con_mayor_importacion(self):
+        importaciones_por_provincia = {}
+        for fila in self.datos:
+            provincia = fila["PROVINCIA"]
+            importaciones = fila["IMPORTACIONES"]
+        
+            if provincia in importaciones_por_provincia:
+                importaciones_por_provincia[provincia] += importaciones
+            else:
+                importaciones_por_provincia[provincia] = importaciones
+    
+        # Encontrar la provincia con mayor volumen de importaciones
+        provincia_maxima = max(importaciones_por_provincia, key=importaciones_por_provincia.get)
+        return provincia_maxima, importaciones_por_provincia[provincia_maxima]
+
+
