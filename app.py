@@ -10,15 +10,20 @@ def main():
         print(f"\t{prov}: ${total:.2f}")
 
     print("\nCompras para una provincia")
-    provincia = input("\tIngrese el nombre de una provincia: ")
-    ventas = analizador.ventas_por_provincia(provincia)
-    print(f"\tVentas de {provincia}: ${ventas:,.2f}")
-
     try:
+        provincia = input("\tIngrese el nombre de una provincia: ")
         ventas = analizador.ventas_por_provincia(provincia)
         print(f"\tVentas de {provincia}: ${ventas:,.2f}")
     except ValueError as e:
         print(e)
+
+
+    print("Exportaciones totales por mes:")
+    resumen = analizador.exportaciones_totales_por_mes()
+    for mes, total in resumen.items():
+        print(f"\t{mes}: ${total:,.2f}")
+
+
 
 if __name__ == "__main__":
     main()

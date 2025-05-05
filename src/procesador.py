@@ -48,7 +48,7 @@ class Analizador:
         exportaciones_por_mes = {}
         for fila in self.datos:
             mes = fila["MES"]
-            exportaciones = fila["EXPORTACIONES"]
+            exportaciones = float(fila["EXPORTACIONES"])
             if mes in exportaciones_por_mes:
                 exportaciones_por_mes[mes] += exportaciones
             else:

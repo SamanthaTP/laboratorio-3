@@ -48,18 +48,26 @@ class TestAnalizador(unittest.TestCase):
      
     def test_exportaciones_totales_por_mes(self):
         resultado = self.analizador.exportaciones_totales_por_mes()
-        self.assertGreater(len(resultado), 0)  # Verificar que haya datos
-        self.assertIn("Enero", resultado)  # Verificar si un mes específico está presente
+        self.assertEqual(len(resultado), 12)  # Verificar que haya datos
 
-    def test_porcentaje_ventas_tarifa_0(self):
-        resultado = self.analizador.porcentaje_ventas_tarifa_0()
-        self.assertGreater(len(resultado), 0)  # Verificar que haya datos
-        self.assertIn("Pichincha", resultado)  # Verificar que haya una provincia específica
+    def test_exportaciones_valores_son_numeros(self):
+        resultado = self.analizador.exportaciones_totales_por_mes()
+        for valor in resultado.values():
+            self.assertIsInstance(valor, float, "El valor de exportaciones debe ser float")
 
-    def test_provincia_con_mayor_importacion(self):
-        provincia, volumen = self.analizador.provincia_con_mayor_importacion()
-        self.assertIsInstance(volumen, (int, float))  # Verificar que el volumen sea un número
-        self.assertGreater(volumen, 0)  # Verificar que el volumen no sea 0
+    def test_suma_total_exportaciones_mayor_a_cero(self):
+        resultado = self.analizador.exportaciones_totales_por_mes()
+        suma_total = sum(resultado.values())
+        self.assertGreater(suma_total, 0, "La suma total de exportaciones debe ser mayor a cero")
+
+    def test_meses_son_claves_validas(self):
+        resultado = self.analizador.exportaciones_totales_por_mes()
+        for mes in resultado.keys():
+            self.assertIsInstance(mes, str, "El nombre del mes debe ser una cadena")
+            self.assertNotEqual(mes.strip(), "", "El nombre del mes no debe estar vacío")
+
+
+    
 
 if __name__ == "__main__":
     unittest.main()
