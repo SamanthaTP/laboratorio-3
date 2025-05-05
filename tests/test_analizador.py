@@ -66,6 +66,10 @@ class TestAnalizador(unittest.TestCase):
             self.assertIsInstance(mes, str, "El nombre del mes debe ser una cadena")
             self.assertNotEqual(mes.strip(), "", "El nombre del mes no debe estar vacío")
 
+    def test_porcentaje_ventas_tarifa_0(self):
+        porcentaje = self.analizador.porcentaje_ventas_tarifa_0_por_provincia()
+        self.assertIsInstance(porcentaje, dict)
+        self.assertTrue(all(0 <= p <= 100 for p in porcentaje.values()))
 
     
 

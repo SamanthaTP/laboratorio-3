@@ -23,6 +23,10 @@ def main():
     for mes, total in resumen.items():
         print(f"\t{mes}: ${total:,.2f}")
 
+    print("\nPorcentaje de ventas con tarifa 0% por provincia:")
+    porcentaje_tarifa_0 = analizador.porcentaje_ventas_tarifa_0_por_provincia()
+    for prov, porcentaje in porcentaje_tarifa_0.items():
+        print(f"\t{prov}: {porcentaje:.2f}%")
 
 
 if __name__ == "__main__":

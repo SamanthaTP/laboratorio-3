@@ -26,7 +26,7 @@ class Analizador:
             if provincia == "ND" :
                 continue
 
-            ventas = fila["TOTAL_VENTAS"]
+            ventas = float(fila["TOTAL_VENTAS"])
             if provincia in ventas_por_provincia:
                 ventas_por_provincia[provincia] += ventas
             else:
@@ -54,41 +54,44 @@ class Analizador:
             else:
                 exportaciones_por_mes[mes] = exportaciones
         return exportaciones_por_mes
-    
-    def porcentaje_ventas_tarifa_0(self):
-        porcentaje_por_provincia = {}
+
+    def porcentaje_ventas_tarifa_0_por_provincia(self):
+        ventas_0_por_provincia = {}
+        ventas_totales_por_provincia = {}
+
         for fila in self.datos:
             provincia = fila["PROVINCIA"]
-            ventas_netas_tarifa_0 = fila["VENTAS_NETAS_TARIFA_0"]
-            total_ventas = fila["TOTAL_VENTAS"]
-        
-        if total_ventas == 0:  # Para evitar la división por 0
-            porcentaje = 0
-        else:
-            porcentaje = (ventas_netas_tarifa_0 / total_ventas) * 100
-        
-        if provincia in porcentaje_por_provincia:
-            porcentaje_por_provincia[provincia].append(porcentaje)
-        else:
-            porcentaje_por_provincia[provincia] = [porcentaje]
-    
-        # Promedio por provincia
-        promedio_por_provincia = {prov: sum(valores) / len(valores) for prov, valores in porcentaje_por_provincia.items()}
-        return promedio_por_provincia
-    
-    def provincia_con_mayor_importacion(self):
-        importaciones_por_provincia = {}
-        for fila in self.datos:
-            provincia = fila["PROVINCIA"]
-            importaciones = fila["IMPORTACIONES"]
-        
-            if provincia in importaciones_por_provincia:
-                importaciones_por_provincia[provincia] += importaciones
+            
+            if provincia == "ND":
+                continue
+
+            try:
+                ventas_0 = float(fila["VENTAS_NETAS_TARIFA_0"])
+                total_ventas = float(fila["TOTAL_VENTAS"])
+            except (KeyError, ValueError):
+                continue  # omite filas con datos corruptos
+
+            # Acumulamos las ventas tarifa 0
+            if provincia in ventas_0_por_provincia:
+                ventas_0_por_provincia[provincia] += ventas_0
             else:
-                importaciones_por_provincia[provincia] = importaciones
-    
-        # Encontrar la provincia con mayor volumen de importaciones
-        provincia_maxima = max(importaciones_por_provincia, key=importaciones_por_provincia.get)
-        return provincia_maxima, importaciones_por_provincia[provincia_maxima]
+                ventas_0_por_provincia[provincia] = ventas_0
 
+            # Acumulamos las ventas totales
+            if provincia in ventas_totales_por_provincia:
+                ventas_totales_por_provincia[provincia] += total_ventas
+            else:
+                ventas_totales_por_provincia[provincia] = total_ventas
 
+        # Calculamos el porcentaje
+        porcentaje_por_provincia = {}
+        for provincia in ventas_totales_por_provincia:
+            total = ventas_totales_por_provincia[provincia]
+            ventas_0 = ventas_0_por_provincia.get(provincia, 0)
+            if total > 0:
+                porcentaje = (ventas_0 / total) * 100
+            else:
+                porcentaje = 0
+            porcentaje_por_provincia[provincia] = round(porcentaje, 2)
+
+        return porcentaje_por_provincia
