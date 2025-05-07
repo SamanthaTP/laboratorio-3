@@ -71,14 +71,22 @@ class TestAnalizador(unittest.TestCase):
         self.assertIsInstance(porcentaje, dict)
         self.assertTrue(all(0 <= p <= 100 for p in porcentaje.values()))
 
-    # En tests/test_analizador.py
-    def test_diferencia_ventas_exportaciones_por_provincia(self):
-        resultado = self.analizador.diferencia_ventas_exportaciones_por_provincia()
-        self.assertIsInstance(resultado, dict)
-        self.assertIn("PICHINCHA", resultado)
-        self.assertGreaterEqual(resultado["PICHINCHA"], 0)
-
     
+
+    def test_diferencia_ventas_exportaciones_por_provincia(self):
+        # Simula datos conocidos
+        self.analizador.datos = [
+            {"PROVINCIA": "Guayas", "TOTAL_VENTAS": 1500.0, "EXPORTACIONES": 500.0},
+            {"PROVINCIA": "Guayas", "TOTAL_VENTAS": 500.0, "EXPORTACIONES": 200.0},
+            {"PROVINCIA": "Pichincha", "TOTAL_VENTAS": 1000.0, "EXPORTACIONES": 300.0}
+        ]
+
+        resultado = self.analizador.diferencia_ventas_exportaciones_por_provincia()
+
+    # Verificamos diferencias esperadas
+        self.assertAlmostEqual(resultado["Guayas"], (1500+500) - (500+200))  # 2000 - 700 = 1300
+        self.assertAlmostEqual(resultado["Pichincha"], 1000 - 300)           # = 700
+  
 
 if __name__ == "__main__":
     unittest.main()
