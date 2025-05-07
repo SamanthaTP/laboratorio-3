@@ -95,3 +95,22 @@ class Analizador:
             porcentaje_por_provincia[provincia] = round(porcentaje, 2)
 
         return porcentaje_por_provincia
+
+    # En src/procesador.py
+    def diferencia_ventas_exportaciones_por_provincia(self):
+        diferencia_por_provincia = {}
+        for fila in self.datos:
+            provincia = fila["PROVINCIA"]
+            if provincia == "ND":
+                continue
+
+            ventas = float(fila["TOTAL_VENTAS"])
+            exportaciones = float(fila["EXPORTACIONES"])
+            diferencia = ventas - exportaciones
+
+            if provincia in diferencia_por_provincia:
+                diferencia_por_provincia[provincia] += diferencia
+            else:
+                diferencia_por_provincia[provincia] = diferencia
+
+        return diferencia_por_provincia
