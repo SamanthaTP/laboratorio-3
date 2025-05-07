@@ -79,4 +79,4 @@ Este proyecto es de libre uso con fines educativos.
 
 ## 🙌 Autor
 
-Proyecto desarrollado por [Tu Nombre Aquí].
+Proyecto desarrollado por Samantha Tituaña.
